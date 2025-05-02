@@ -1,1 +1,1 @@
-Hi there. Basic reddit scraper that will search user specified reddit post for user specified keywords. Related subreddit post are exported to a CSV file and arranged by Subreddit, Keyword, Title, Author, Score, Comments, Created_UTC, Human_date and URL. 
+Hi there. Basic reddit scraper that will search user specified reddit post for user specified keywords.  Subreddit post that satisfy requirements are exported to a CSV file and arranged by Subreddit, Keyword, Title, Author, Score, Comments, Created_UTC, Human_date and URL. 
