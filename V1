@@ -1,0 +1,60 @@
+import praw
+import csv
+from datetime import datetime
+
+# Initialize Reddit API
+reddit = praw.Reddit(
+    client_id="YOUR_CLIENT_ID",
+    client_secret="YOUR_CLIENT_SECRET",
+    username="YOUR_REDDIT_USERNAME",
+    password="YOUR_REDDIT_PASSWORD",
+    user_agent="scraperbot/v1.0"
+)
+
+# Specify subreddits to search. Replace variables with subreddits you wish to search.
+subreddits = ["A", "B"]
+# Specify keywords of interest. Replace variables with keywords of interest. 
+keywords = ["X", "Y", "Z"]
+
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+filename = f"reddit_scrape_{timestamp}.csv"
+
+with open(filename, mode='w', newline='', encoding='utf-8') as file:
+    writer = csv.writer(file)
+    
+    # Header row
+    writer.writerow([
+        'Subreddit', 
+        'Keyword', 
+        'Title', 
+        'Author', 
+        'Score', 
+        'Comments', 
+        'Created_UTC', 
+        'Human_Date',
+        'URL'
+    ])
+    
+    for subreddit_name in subreddits:
+        subreddit = reddit.subreddit(subreddit_name)
+        print(f"\n--- Scanning r/{subreddit_name} ---")
+        
+        for keyword in keywords:
+            print(f"Keyword: '{keyword}'")
+            for post in subreddit.search(keyword, limit=5):
+                # Fixed indentation starts here (4 spaces per level)
+                created_date = datetime.fromtimestamp(post.created_utc).strftime('%Y-%m-%d %H:%M:%S')
+                
+                writer.writerow([
+                    subreddit_name,
+                    keyword,
+                    post.title,
+                    post.author.name if post.author else '[deleted]',
+                    post.score,
+                    post.num_comments,
+                    post.created_utc,
+                    created_date,
+                    f"https://reddit.com{post.permalink}"
+                ])  # Ensure this aligns with the 'for post' loop
+
+print(f"\nDone! Data saved to {filename}")
